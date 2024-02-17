@@ -1,0 +1,117 @@
+Bell Sys Monitor WebSocket Server README
+Introduction
+The Bell Sys Monitor WebSocket Server acts as the central hub for receiving, processing, and storing system metrics collected from various clients. It provides real-time monitoring capabilities for system administrators to track the health and performance of their infrastructure.
+
+Prerequisites
+This README assumes operations are performed with root privileges or through a user with sufficient sudo permissions.
+
+System Requirements
+Operating System: Compatible with Debian, Ubuntu, CentOS, and other major Linux-based operating systems.
+Python Version: Python 3.6 or later.
+WebSocket Server Dependencies: Specific Python packages and system utilities are required for the WebSocket server to function correctly.
+
+Installation
+Note: This guide assumes you are operating as the root user. If not, switch to the root user by executing su or use sudo before commands as needed.
+
+Dependencies Installation
+Install Python 3.6 or later:
+
+On Debian/Ubuntu:
+apt-get update && apt-get install python3 python3-pip
+
+On CentOS/RHEL:
+yum install python3 python3-pip
+
+Install System Utilities:
+
+The server might require sysstat and other utilities for certain operations:
+apt-get install sysstat
+
+Install Required Python Packages:
+
+Use pip3 to install necessary packages for the WebSocket server:
+pip3 install flask flask-socketio eventlet
+
+
+
+Create a virtual environment in your project directory:
+virtualenv venv
+
+Activate the virtual environment:
+source venv/bin/activate
+
+On Debian 12:
+pip install flask flask-socketio eventlet --break-system-packages
+
+Configuration
+Configure your WebSocket server by setting up necessary parameters such as the port number, and any other relevant settings in your project's configuration files or environment variables.
+
+Running the WebSocket Server
+To launch the WebSocket server, run the following command from your project directory:
+cd /path/to/your/project && python3 -m app <statement>
+
+Replace /path/to/your/project with the path to your main server script if it differs.
+
+Monitoring and Management
+Once the WebSocket server is running, it will start listening for connections from clients. You can monitor incoming data and manage connections through the server's console output or through a dedicated admin interface if your application includes one.
+
+Stopping the Server
+To stop the WebSocket server, use the CTRL+C command in your terminal.
+
+Note: This README provides a basic overview for setting up and running a WebSocket server for the Bell System Monitoring tool. Depending on the specifics of your implementation, additional steps or modifications may be required. Always refer to the documentation for the specific libraries and frameworks you are using for more detailed instructions.
+
+For setting up and managing the Bell Sys Monitor WebSocket server as a service using systemd, follow these steps. This setup allows the WebSocket server to start automatically at boot, and provides commands to start, stop, and restart the service manually. Ensure you have root or sudo privileges on your Linux system for these operations.
+
+For setting up and managing the Bell Sys Monitor WebSocket server as a service using systemd, follow these steps. This setup allows the WebSocket server to start automatically at boot and provides commands to manually start, stop, and restart the service. Ensure you have root or sudo privileges on your Linux system for these operations.
+
+Creating a Systemd Service File for WebSocket Server
+Locate the Example Service File:
+An example service file can be found at /install/service/bell_sys_monitor_socket.service within your project directory. This file contains a template for configuring the WebSocket service with systemd.
+
+Copy the Example Service File:
+Copy the example service file to the /etc/systemd/system/ directory, where systemd looks for service units.
+
+cp /path/to/your/project/install/service/bell_sys_monitor_socket.service /etc/systemd/system/
+
+Adjust the Service File Configuration:
+Open the copied service file in your favorite text editor to adjust paths and settings according to your project's setup:
+
+nano /etc/systemd/system/bell_sys_monitor_socket.service
+vi /etc/systemd/system/bell_sys_monitor_socket.service
+
+Inside the file, you'll find placeholders and instructions for setting:
+
+The user and group under which the service should run.
+The working directory for your WebSocket server.
+The command to start the server, pointing to the Python executable within your virtual environment and your main WebSocket server script.
+Here's an example snippet you might see and need to adjust in the service file:
+
+[Service]
+User=<YourUser>
+Group=<YourGroup>
+WorkingDirectory=/path/to/websocket/project
+ExecStart=/path/to/your/venv/bin/python /path/to/websocket/app.py
+
+Replace placeholders with the actual values that match your setup.
+
+Reload Systemd to Recognize the New Service:
+After you've adjusted and saved the service file, reload systemd to recognize your new service:
+systemctl daemon-reload
+
+Managing the WebSocket Server Service
+With the service file in place and systemd aware of your new service, you can use the following commands to manage the WebSocket server:
+
+To start the service: sudo systemctl start bell_sys_monitor_socket.service
+To stop the service: sudo systemctl stop bell_sys_monitor_socket.service
+To restart the service: sudo systemctl restart bell_sys_monitor_socket.service
+To enable the service to start at boot: sudo systemctl enable bell_sys_monitor_socket.service
+To disable the service from starting at boot: sudo systemctl disable bell_sys_monitor_socket.service
+To check the status of the service: sudo systemctl status bell_sys_monitor_socket.service
+Viewing Logs
+To view the WebSocket server's logs:
+journalctl -u bell_sys_monitor_socket.service
+
+Accessing the WebSocket Server
+After starting the server, clients can connect to it using the configured host and port, typically through ws://[hostname or IP]:[port]. You can also use wss://sub.mydomain.com for a secure connecion.
+
+This README provides a guide for deploying your WebSocket server as a systemd service for system monitoring. Depending on your project's specifics, including its dependencies and environment, adjustments to the service file and commands may be necessary.
