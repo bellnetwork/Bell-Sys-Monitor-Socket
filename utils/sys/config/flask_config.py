@@ -37,4 +37,4 @@ def create_app():
 
     celery = Celery(app.import_name, broker=os.environ.get('CELERY_BROKER_URL'))
 
-    return app, socketio, emit, redis_client, celery, server_ip, server_id
+    return app, socketio, emit
